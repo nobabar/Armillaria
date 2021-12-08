@@ -1,0 +1,231 @@
+%--------------------------------------------------------%
+%	CODE
+%--------------------------------------------------------%
+
+\subsection{Nettoyage des séquences}
+\label{ann:annexeD1}
+    \begin{tcolorbox}[colback=darkgray!5!white,colframe=black!75!black]
+        \begin{minted}{Python}
+
+# lecture du fichier contenant les séquences
+ref_file_dir = r'C:\...\refseq.fasta'
+with open(ref_file_dir, "r") as file:
+    cont = file.read().split('>')[1:]
+
+# les noms de séquences et les séquences sont séparées
+name, seq = [], []
+for x in cont:
+    name.append(x.split('\n', 1)[0])
+    seq.append(x.split('\n', 1)[1].replace('\n', ''))
+species = list(i.rsplit(".", 1)[1] for i in name)
+
+# on fait une liste loci contenant une liste de que chaque locus
+# ainsi qu'une liste gaps contenant l'information d'un gap ou non pour chaque locus
+loci = []
+gaps = []
+for i in range(len(seq[0])):
+    locus = ''
+    gp = ''
+    for x in seq:
+        locus += x[i]
+        if x[i] == '-':
+            gap = '-'
+    loci.append(locus)
+    gaps.append(gap)
+
+# tant que le premier locus donné contient plus de 20% de gaps, l'enlever
+while loci[0].count("-") > 0.2*len(cont):
+    loci.pop(0)
+# tant que le dernier locus donné contient plus de 20% de gaps, l'enlever
+while loci[-1].count("-") > 0.2*len(cont):
+    loci.pop(-1)
+# pour éviter des problèmes d'alignement, enlever les sites contenant des gaps
+while i < len(loci):
+        if 0 < loci[i].count("-"): #< 0.2*len(cont):
+            loci.pop(i)
+        else:
+            i += 1
+
+        \end{minted}
+    \end{tcolorbox}
+\subsection{Création d'un fichier rassemblant les SNPs}
+\label{ann:annexeD2}
+    \begin{tcolorbox}[colback=darkgray!5!white,colframe=black!75!black]
+        \begin{minted}{Python}
+snp = {}
+for i in range(len(loci)):
+    # pas de SNP si le locus ne contient qu'un seul type de nucléotide
+    if len(set(loci[i])) >= 2:
+        snp_loc = []
+        for j in range(len(loci[i])):
+            snp_loc.append(list(loci[i])[j])
+        tag = True
+        for k in set(loci[i]):
+            # on ne prend pas en compte le SNP si c'est un singleton
+            if loci[i].count(k) == 1:
+                tag = False
+        # on ne le prend pas non plus en compte si c'est un indel
+        if len(set(loci[i])) == 2 and "-" in set(loci[i]):
+            tag = False
+        # si toutes les conditions sont réunies alors
+        # nous avons un locus susceptible de contenir un SNP
+        if tag:
+            snp[i+1] = snp_loc
+    seq_final.append(loci[i])
+
+d = {}
+d["species"] = species
+for i in snp.keys():
+    d[i] = list(snp[i])
+df = panda.DataFrame(data=d, columns=d.keys(), index=name)
+df.to_csv(r'C\...\consensus_seq.csv')
+        \end{minted}
+    \end{tcolorbox}
+\subsection{Données manquantes des séquences inconnues}
+\label{ann:annexeD3}
+    \begin{tcolorbox}
+        \begin{minted}{Python}
+i = 0
+# parcours la liste des phred score
+while i < len(seqQual):
+    for j in range(len(seqQual[i])):
+        # un qualité de 20 signifie une probabilité d'erreur de 1%
+        if seqQual[i][j] < 20:
+            if j == 0:
+                seqStr[i] = seqStr[i][1:]
+            else:
+                seqStr[i] = seqStr[i][:j-1]+'N'+seqStr[i][j-1:]
+    # si la séquence contient plus de 15% de N
+    # elle considérée de trop mauvaise qualité
+    if seqStr[i].count("N") > 0.15*len(seqStr[i]):
+        seqName.pop(i)
+        seqStr.pop(i)
+        seqQual.pop(i)
+    else:
+        # les débuts et fins de séquence sont souvent de mauvaise qualité
+        while seqStr[i][:5].count("N") > 4:
+            seqStr[i] = seqStr[i][5:]
+        while seqStr[i][-5:].count("N") > 4:
+            seqStr[i] = seqStr[i][:-5]
+        i += 1
+        \end{minted}
+    \end{tcolorbox}
+\subsection{Filtration de l'alignement}
+\label{ann:annexeD4}
+    \begin{tcolorbox}
+        \begin{minted}{Python}
+# on rassemble les séquences références et les inconnues
+with open(unaligned_dir, "a") as align:
+    with open(reference_file_dir, "r") as ref:
+        for line in ref:
+            align.write(line)
+    with open(file, "r") as unk:
+        for line in unk:
+            align.write(line)
+
+# on les aligne
+muscle_cline = MuscleCommandline(muscle_dir, input=unaligned_dir, out=aligned_dir)
+stdout, stderr = muscle_cline()
+
+i = 0
+# on parcour une séquence de référence avant l'alignement
+while i < len(ref_seq)-1:
+    # si cette séquence de référence est différente pour un site 
+    # après l'alignement, alors ce site est une insertion et on l'enlève
+    if ref_seq[i] != aligned_ref[i]:
+        aligned_ref.pop(i)
+        loci.pop(i)
+    else:
+        i += 1
+# et on enlève les insertions à la fin de la séquence si il y en a
+loci = loci[:len(ref_seq)]
+
+with open(aligned_dir.replace(".fasta", "_cleaned.fasta"), "w") as cln:
+    for i in range(len(loci[0])):
+        tag = ''
+        for x in loci:
+            tag = tag + x[i]
+        # if name[i] not in ref_names:
+        cln.write('>' + name[i] + '\n' + tag + '\n')
+        \end{minted}
+    \end{tcolorbox}
+\subsection{Identification des isolats}
+\label{ann:annexeD5}
+    \begin{tcolorbox}
+        \begin{minted}{Python}
+def identifier_intra(sequence, snp_dict, group):
+    id_dict = {}
+    for specie in group:
+        # on parcour la liste des SNPs
+        for snp in snp_dict[specie].keys():
+            nucl = sequence[snp-1]
+            # si le nucléotide au site du SNP correspond
+            if nucl in snp_dict[specie][snp]:
+                id_dict[specie]["score"] = id_dict[specie]["score"] + 1
+            # si le nucléotide est une donnée manquante
+            if nucl == "N":
+                id_dict[specie]["N"] = id_dict[specie]["N"] + 1
+    return id_dict
+
+def identifier_inter(sequence, snp_dict, group):
+    id_dict = {}
+    # on parcour la liste des SNPs
+    for snp in snp_dict[group].keys():
+        nucl = sequence[snp-1]
+        # si le nucléotide au site du SNP correspond
+        if nucl in snp_dict[group][snp]:
+            id_dict["score"] = id_dict["score"] + 1
+        # si le nucléotide est une donnée manquante
+        if nucl == "N":
+            id_dict["N"] = id_dict["N"] + 1
+    return id_dict
+
+def group_branch(sequence, snp_dict, phylo):
+    specie_ind = {}
+    # on prend séparement l'extragroupe
+    if "out_group" in phylo.keys():
+        out_group_specie = identifier_intra(sequence, snp_dict, phylo["out_group"])
+        for specie in out_group_specie.keys():
+            # si l'isolat correspond à au moins 90% des SNPs - ses données manquantes
+            if out_group_specie[specie]["score"] >= int(0.9*len(snp_dict[specie])
+                                                   -out_group_specie[specie]["N"]):
+                specie_ind = {specie: [out_group_specie[specie]["score"],
+                                       out_group_specie[specie]["N"]]}
+    # si l'isolat n'a pas été identifié comme faisant parti de l'extragroupe
+    if bool(specie_ind) == False:
+        for groups in phylo["groups"]:
+            group_inter = identifier_inter(sequence, snp_dict, groups)
+            # on accepte un seul SNP non validé pour classer l'isolat
+            if group_inter["score"] >= len(snp_dict[groups])-1:
+                group_specie = identifier_intra(sequence, snp_dict,
+                                                group["groups"][groups])
+                for specie in group_specie.keys():
+                    # on accepte un seul SNP non validé pour classer l'isolat
+                    if group_specie[specie]["score"] >= len(snp_dict[specie])-1:
+                        specie_ind[specie] = [group_specie[specie]["score"],
+                                              group_specie[specie]["N"]]
+    # si l'isolat n'a été identifié pour aucune espèce
+    if bool(specie_ind) == False:
+        specie_ind = "undefined"
+    return specie_ind
+        \end{minted}
+    \end{tcolorbox}
+\subsection{Récupération de données GenBank}
+\label{ann:annexeD6}
+    \begin{tcolorbox}
+        \begin{minted}{Python}
+from Bio import Entrez
+# Répeter l'opération pour chaque espèce de notre liste
+for specie in species:
+    handle_1 = Entrez.esearch(db="nucleotide",
+                            term="armillaria"+specie+"internal transcribed spacer",
+                            retmax=40,
+                            retmode="fasta")
+    # liste des numéro d'accès des séquences à récuperer
+    id_list = ",".join(Entrez.read(handle_1)["IdList"])
+    handle_1.close()
+    
+    handle_2 = Entrez.efetch(db = 'nucleotide', id = id_list,
+                            rettype = 'fasta', retmod = 'text')
+        \end{minted}
+    \end{tcolorbox}

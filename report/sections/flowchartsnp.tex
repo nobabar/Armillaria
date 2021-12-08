@@ -1,0 +1,62 @@
+\singlespacing
+% \addtolength{\oddsidemargin}{-0.7in}
+
+\begin{landscape}
+\begin{tikzpicture}[node distance=1.6cm]
+
+\node (start) [startstop] {\textit{Armillaria}};
+\node (in1) [io, left of=start, xshift=-7cm, yshift=-0.2cm, align=center] {SNPs tabscens\\31: C, 110: C, 120: A, 438: C,\\446: A, 537: A. ..};
+\draw [arrow] (start) -- (in1);
+\node (pro1) [process, below of=in1, yshift=-0.3cm] {La séquence correspond aux SNPs};
+\draw [arrow] (in1) -- (pro1);
+\node (dec1) [decision, below of=pro1, yshift=-0.5cm] {\textit{A. tabescens}};
+\draw [arrow] (pro1) -- node[anchor=east] {oui} (dec1);
+
+\node (in2) [io, below of=start, xshift=8cm, yshift=-1cm, align=center] {SNPs mellea\\52: A, 60: A, 67: G, 103: G,\\104: C, 122: T...};
+\draw [arrow] (pro1) -- node[anchor=south] {non} (in2);
+\node (pro2) [process, below of=in2, yshift=-0.3cm] {La séquence correspond aux SNPs};
+\draw [arrow] (in2) -- (pro2);
+\node (dec2) [decision, below of=pro2, yshift=-0.5cm] {\textit{A. mellea}};
+\draw [arrow] (pro2) -- node[anchor=east] {oui} (dec2);
+
+\node (in3) [io, left of=pro2, xshift=-8cm, yshift=-0.3cm, align=center] {SNPs groupe 1 : ostoyae/borealis\\536: G, 568: G\\SNPs groupe 2 : gallica/cepistipes\\536: A, 568: A};
+\draw [arrow] (pro2) -- node[anchor=south] {non} (in3);
+\node (pro3a) [process, below of=in3, xshift=-4cm, yshift=-0.5cm] {La séquence correspond aux SNPs du groupe 1};
+\draw [arrow] (in3) -- (pro3a);
+\node (pro3b) [process, below of=in3, xshift=+4cm, yshift=-0.5cm] {La séquence correspond aux SNPs du groupe 2};
+\draw [arrow] (in3) -- (pro3b);
+
+\node (in4a) [io, below of=pro3a, xshift=-1cm, yshift=-0.4cm, align=center] {SNPs ostoyae\\536: G, 568: G\\SNPs borealis\\536: A, 568: A};
+\draw [arrow] (pro3a) -- node[anchor=west] {oui} (in4a);
+\node (pro4aa) [process, below of=in4a, xshift=-3cm, yshift=-0.5cm] {Correspond aux SNPs d'ostoyae};
+\draw [arrow] (in4a) -- (pro4aa);
+\node (dec4aa) [decision, below of=pro4aa, yshift=-0.5cm] {\textit{A. ostoyae}};
+\draw [arrow] (pro4aa) -- node[anchor=west] {oui} (dec4aa);
+
+\node (pro4ab) [process, below of=in4a, xshift=+2.4cm, yshift=-0.5cm] {Correspond aux SNPs de borealis};
+\draw [arrow] (in4a) -- (pro4ab);
+\node (dec4ab) [decision, below of=pro4ab, yshift=-0.5cm] {\textit{A. borealis}};
+\draw [arrow] (pro4ab) -- node[anchor=west] {oui} (dec4ab);
+
+
+
+\node (in4b) [io, below of=pro3b, xshift=+1cm, yshift=-0.5cm, align=center] {SNPs gallica\\111: C, 129: T, 421: C\\SNPs cepistipes\\111: T, 129: C, 421: T};
+\draw [arrow] (pro3b) -- node[anchor=east] {oui} (in4b);
+\node (pro4ba) [process, below of=in4b, xshift=-2.4cm, yshift=-0.5cm] {Correspond aux SNPs de gallica};
+\draw [arrow] (in4b) -- (pro4ba);
+\node (dec4ba) [decision, below of=pro4ba, yshift=-0.5cm] {\textit{A. gallica}};
+\draw [arrow] (pro4ba) -- node[anchor=east] {oui} (dec4ba);
+
+\node (pro4bb) [process, below of=in4b, xshift=+3cm, yshift=-0.5cm] {Correspond aux SNPs de cepistipes};
+\draw [arrow] (in4b) -- (pro4bb);
+\node (dec4bb) [decision, below of=pro4bb, yshift=-0.5cm] {\textit{A. cepistipes}};
+\draw [arrow] (pro4bb) -- node[anchor=east] {oui} (dec4bb);
+
+\node[below of=dec4ba, xshift=4cm, font=\small] {Figure 2 - Organigramme de détermination des espèces d'Armaillaire par SNPs};
+
+\end{tikzpicture}
+\end{landscape}
+
+\doublespacing
+
+% \addtolength{\oddsidemargin}{+0.7in}

@@ -1,0 +1,227 @@
+%--------------------------------------------------------%
+%	ANNEXES
+%--------------------------------------------------------%
+
+\pagestyle{empty}
+
+\begin{appendices}
+    \appendixheaderon
+    \section{Séquences référentes colléctées depuis GenBank}
+    \label{ann:annexeA}
+    \pgfplotstabletypeset[%
+                          col sep=comma,
+                          every head row/.style={
+                            before row=\toprule,after row=\midrule},
+                          every last row/.style={
+                            after row=\bottomrule},
+                          every even row/.style={
+                            before row={\rowcolor[gray]{0.9}}},
+                          every row no 5/.style={before row=\hline},
+                          every row no 8/.style={before row={\hline \rowcolor[gray]{0.9}}},
+                          every row no 12/.style={before row={\hline \rowcolor[gray]{0.9}}},
+                          every row no 16/.style={before row={\hline \rowcolor[gray]{0.9}}},
+                          every row no 22/.style={before row={\hline \rowcolor[gray]{0.9}}},
+                          display columns/1/.style={column type = {l}},
+                          display columns/2/.style={column type = {l}},
+                          string type,
+                          ]{sequences/genbank.csv}
+    \section{Séquences ADN}
+        \subsection{Séquences alignées}
+        \label{ann:annexeB1}
+            \begin{texshade}{sequences/refseq.fasta}
+            % \showsequencelogo{top}
+            \shadingmode[allmatchspecial]{identical}
+            \nomatchresidues{Gray70}{White}{upper}{bf}
+            \conservedresidues{Black}{LightCyan}{upper}{bf}
+            \allmatchresidues{White}{LightRed}{upper}{bf}
+            \setends{1}{0..39}
+            \showruler{bottom}{1}
+            \rulersteps{10}
+            \hidenumbering
+            % \hideconsensus
+            \end{texshade}
+        \subsection{Séquences alignées et nettoyées}
+        \label{ann:annexeB2}
+            \begin{texshade}{sequences/refseqcleaned.fasta}
+            % \showsequencelogo{top}
+            \shadingmode[allmatchspecial]{identical}
+            \nomatchresidues{Gray70}{White}{upper}{bf}
+            \conservedresidues{Black}{LightCyan}{upper}{bf}
+            \allmatchresidues{White}{LightRed}{upper}{bf}
+            \setends{1}{0..39}
+            \showruler{bottom}{1}
+            \rulersteps{10}
+            \hidenumbering
+            % \hideconsensus
+            \end{texshade}
+    \section{SNPs}
+        \subsection{Sites candidats des SNPs}
+        \label{ann:annexeC1}
+            \pgfplotstabletypeset[%
+                                  col sep=comma,
+                                  columns={species,7,13,33,54,111,123,153,
+                                          201,421,536,547,557,568,571,690},
+                                  every head row/.style={
+                                    before row=\toprule,after row=\midrule},
+                                  every last row/.style={
+                                    after row=\bottomrule},
+                                  every even row/.style={
+                                    before row={\rowcolor[gray]{0.9}}},
+                                  string type,
+                                  postproc cell content/.style={        
+                                  @cell content/.add={
+                                    \ifnum\pdfstrcmp{\unexpanded{#1}}{A}=0
+                                        \cellcolor{green!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{T}=0
+                                        \cellcolor{red!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{C}=0
+                                        \cellcolor{cyan!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{G}=0
+                                        \cellcolor{magenta!40!white}
+                                   \fi
+                                   }{}}
+                                  ]{sequences/SNPloci.csv}
+        \subsection{SNPs \textit{A. borealis} et \textit{A. ostoyae}}
+        \label{ann:annexeC2}
+            \pgfplotstabletypeset[%
+                                  col sep=comma,
+                                  every head row/.style={
+                                    before row=\toprule,after row=\midrule},
+                                  every last row/.style={
+                                    after row=\bottomrule},
+                                  every even row/.style={
+                                    before row={\rowcolor[gray]{0.9}}},
+                                  string type,
+                                  postproc cell content/.style={        
+                                  @cell content/.add={
+                                    \ifnum\pdfstrcmp{\unexpanded{#1}}{A}=0
+                                        \cellcolor{green!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{T}=0
+                                        \cellcolor{red!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{C}=0
+                                        \cellcolor{cyan!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{G}=0
+                                        \cellcolor{magenta!40!white}
+                                   \fi
+                                   }{}}
+                                  ]{sequences/snps_borost.csv}
+        \subsection{SNPs \textit{A. cepistipes} et \textit{A. gallica}}
+        \label{ann:annexeC3}
+            \pgfplotstabletypeset[%
+                                  col sep=comma,
+                                  every head row/.style={
+                                    before row=\toprule,after row=\midrule},
+                                  every last row/.style={
+                                    after row=\bottomrule},
+                                  every even row/.style={
+                                    before row={\rowcolor[gray]{0.9}}},
+                                  string type,
+                                  postproc cell content/.style={        
+                                  @cell content/.add={
+                                    \ifnum\pdfstrcmp{\unexpanded{#1}}{A}=0
+                                        \cellcolor{green!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{T}=0
+                                        \cellcolor{red!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{C}=0
+                                        \cellcolor{cyan!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{G}=0
+                                        \cellcolor{magenta!40!white}
+                                   \fi
+                                   }{}}
+                                  ]{sequences/snps_cepgal.csv}
+        \newpage
+        \subsection{SNPs \textit{A. tabescens}}
+        \label{ann:annexeC4}
+            \pgfplotstabletypeset[%
+                                  col sep=comma,
+                                  every head row/.style={
+                                    before row=\toprule,after row=\midrule},
+                                  every last row/.style={
+                                    after row=\bottomrule},
+                                  every even row/.style={
+                                    before row={\rowcolor[gray]{0.9}}},
+                                  string type,
+                                  postproc cell content/.style={        
+                                  @cell content/.add={
+                                    \ifnum\pdfstrcmp{\unexpanded{#1}}{A}=0
+                                        \cellcolor{green!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{T}=0
+                                        \cellcolor{red!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{C}=0
+                                        \cellcolor{cyan!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{G}=0
+                                        \cellcolor{magenta!40!white}
+                                   \fi
+                                   }{}}
+                                  ]{sequences/snps_tab.csv}
+        \subsection{SNPs \textit{A. mellea}}
+        \label{ann:annexeC5}
+            \pgfplotstabletypeset[%
+                                  col sep=comma,
+                                  columns={species,52,60,67,103,104,122,135,
+                                            155,171,174,183,221,398,540},
+                                  every head row/.style={
+                                    before row=\toprule,after row=\midrule},
+                                  every last row/.style={
+                                    after row=\bottomrule},
+                                  every even row/.style={
+                                    before row={\rowcolor[gray]{0.9}}},
+                                  string type,
+                                  postproc cell content/.style={        
+                                  @cell content/.add={
+                                    \ifnum\pdfstrcmp{\unexpanded{#1}}{A}=0
+                                        \cellcolor{green!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{T}=0
+                                        \cellcolor{red!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{C}=0
+                                        \cellcolor{cyan!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{G}=0
+                                        \cellcolor{magenta!40!white}
+                                   \fi
+                                   }{}}
+                                  ]{sequences/snps_mel.csv}
+
+            \pgfplotstabletypeset[%
+                                  col sep=comma,
+                                  columns={species,548,552,553,615,653,654,657},
+                                  every head row/.style={
+                                    before row=\toprule,after row=\midrule},
+                                  every last row/.style={
+                                    after row=\bottomrule},
+                                  every even row/.style={
+                                    before row={\rowcolor[gray]{0.9}}},
+                                  string type,
+                                  postproc cell content/.style={        
+                                  @cell content/.add={
+                                    \ifnum\pdfstrcmp{\unexpanded{#1}}{A}=0
+                                        \cellcolor{green!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{T}=0
+                                        \cellcolor{red!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{C}=0
+                                        \cellcolor{cyan!40!white}
+                                   \fi
+                                   \ifnum\pdfstrcmp{\unexpanded{#1}}{G}=0
+                                        \cellcolor{magenta!40!white}
+                                   \fi
+                                   }{}}
+                                  ]{sequences/snps_mel.csv}
+    \section{Code}
+        \input{sections/code}
+\end{appendices}

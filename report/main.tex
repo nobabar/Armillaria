@@ -1,0 +1,42 @@
+\input{sections/preamble} % See preamble.tex to edit the overall layout
+
+% Headers
+\lhead{Rapport de Stage}
+\chead{L'armillaire dans les forêt d'Europe}
+\rhead{Baptiste Rousseau}
+
+\AtBeginShipout{%
+  \ifnum\value{page}=\number\numexpr\getpagerefnumber{LastPage}-2\relax
+    \phantomsection\label{preLastPage}
+  \fi}
+\rfoot{Page \thepage \hspace{1pt} sur \pageref{sec:Conclusion}}
+
+%--------------------------------------------------------%
+%	BEGIN DOCUMENT
+%--------------------------------------------------------%
+
+\begin{document}
+
+
+\input{sections/coverpage}
+
+
+\input{sections/content}
+
+
+\newpage
+\singlespacing
+\thispagestyle{empty}
+
+\addcontentsline{toc}{section}{Références}
+\bibliographystyle{references/ajs}
+\bibliography{references/biblio}
+
+\addcontentsline{toc}{section}{Glossaire}
+\input{sections/glossaire}
+
+\newpage
+\input{sections/annexe}
+
+
+\end{document}

@@ -1,0 +1,54 @@
+\singlespacing
+\begin{tikzpicture}[node distance=2cm]
+
+\node (start) [startstop] {\textit{Sequence Identifier Scripts}};
+\node (in1a) [io, below of=start, xshift=-4cm, align=center] {Séquencces inconnues (.ab1)};
+\draw [arrow] (start) -- (in1a);
+
+    \node (pro1a) [process, below of=in1a, align=center] {ab1\_to\_fastQ.py\\ Filtre et compile les séquences selon leur phred scores.};
+    \draw [arrow] (in1a) -- (pro1a);
+    \node (out1a) [io, below of=pro1a] {*.fas};
+    \draw [arrow] (pro1a) -- (out1a);
+
+    \node (pro2a) [process, below of=out1a, align=center] {align\_ref\_unk.py\\ Réalise un alignement avec les séquences de référence.};
+    \draw [arrow] (out1a) -- (pro2a);
+    \node (out2a) [io, below of=pro2a] {*\_aligned.fasta};
+    \draw [arrow] (pro2a) -- (out2a);
+
+    \node (pro3a) [process, below of=out2a, align=center] {filter\_alignement.py\\ Enlève de l'alignement les indels.};
+    \draw [arrow] (out2a) -- (pro3a);
+    \node (out3a) [io, below of=pro3a] {*\_aligned\_cleaned.fasta};
+    \draw [arrow] (pro3a) -- (out3a);
+
+    \node (pro4a) [process, below of=out3a, align=center] {snp\_identifier.py\\ Identifie les séquences à partir du fichier de SNPs.};
+    \draw [arrow] (out3a) -- (pro4a);
+    \node (out4a) [io, below of=pro4a] {*\_species.JSON};
+    \draw [arrow] (pro4a) -- (out4a);
+
+\node (in1c) [io, below of=start, xshift=+4cm, align=center] {Liste d'espèces};
+\draw [arrow] (start) -- (in1c);
+
+    \node (pro1c) [process, below of=in1c, align=center] {GenBank\_scrap.py\\ Téléchargement de séquenques sur GenBank.};
+    \draw [arrow] (in1c) -- (pro1c);
+    \node (out1c) [io, below of=pro1c, align=center] {genbank\_A.fas};
+    \draw [arrow] (pro1c) -- (out1c);
+    \draw [arrow] (out1c) -- (pro2a);
+
+\node (in1b) [io, below of=out1c, yshift=-2cm, align=center] {Séquencces reférentes (.fasta)};
+\draw [arrow] (in1b) -- (pro2a);
+
+    \node (pro1b) [process, below of=in1b, align=center] {consensus\_sequence.py\\ Détermine les sites polymorphes.};
+    \draw [arrow] (in1b) -- (pro1b);
+    \node (out1b) [io, below of=pro1b] {consensus\_seq.csv};
+    \draw [arrow] (pro1b) -- (out1b);
+
+    \node (pro2b) [process, below of=out1b, align=center] {snps.R\\ Détermine les SNPs diagnostiques.};
+    \draw [arrow] (out1b) -- (pro2b);
+    \node (out2b) [io, below of=pro2b, align=center] {snps.csv\\snps\_out\_group.csv};
+    \draw [arrow] (pro2b) -- (out2b);
+    \draw [arrow] (out2b) -- (pro4a);
+
+\node[below of=out2b, xshift=1cm, yshift=1cm] {Figure 1 - Organigramme du script};
+
+\end{tikzpicture}
+\doublespacing
